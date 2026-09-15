@@ -41,9 +41,12 @@ Applicazione desktop in via di sviluppo per il calcolo del potenziale profitto d
 ```bash
 git clone https://github.com/lore6e7a6f/MarketCapCalculator.git
 cd MarketCapCalculator
-dotnet restore
-dotnet build
-dotnet run --project MarketCapCalculator
+
+1. start build.bat
+
+2. dotnet restore
+   dotnet build
+   dotnet run --project MarketCapCalculator
 ```
 
 ## Configurazione
