@@ -46,7 +46,7 @@ cd MarketCapCalculator
 
 2. dotnet restore
    dotnet build
-dotnet run --project MarketCapCalculator
+   dotnet run --project MarketCapCalculator
 ```
 
 ## Configurazione
