@@ -5,9 +5,8 @@ using System.Windows.Data;
 
 namespace MarketCapCalculator.Converters
 {
-    /// <summary>
     /// Converte un booleano in Visibility
-    /// </summary>
+    
     public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -2,9 +2,9 @@ using System;
 
 namespace MarketCapCalculator.Models
 {
-    /// <summary>
+    
     /// Modello per salvare una predizione di mercato nella storia
-    /// </summary>
+    
     public class PredictionHistory
     {
         public int Id { get; set; }

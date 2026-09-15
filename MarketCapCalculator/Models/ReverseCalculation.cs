@@ -1,8 +1,7 @@
 namespace MarketCapCalculator.Models
 {
-    /// <summary>
+    
     /// Modello per il calcolo reverse
-    /// </summary>
     public class ReverseCalculation
     {
         public decimal InvestmentAmount { get; set; }

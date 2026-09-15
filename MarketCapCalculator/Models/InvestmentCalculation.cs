@@ -1,8 +1,8 @@
 namespace MarketCapCalculator.Models
 {
-    /// <summary>
+    
     /// Modello per i risultati del calcolo di investimento
-    /// </summary>
+    
     public class InvestmentCalculation
     {
         public decimal InvestmentAmount { get; set; }

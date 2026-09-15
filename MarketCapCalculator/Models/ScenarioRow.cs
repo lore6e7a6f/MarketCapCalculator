@@ -1,8 +1,8 @@
 namespace MarketCapCalculator.Models
 {
-    /// <summary>
+    
     /// Modello per una riga della tabella scenari
-    /// </summary>
+   
     public class ScenarioRow
     {
         public decimal MarketCap { get; set; }
