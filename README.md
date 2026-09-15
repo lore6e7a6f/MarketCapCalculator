@@ -1,4 +1,4 @@
-# MarketCap Calculator Pro
+# MarketCap Calculator Pre-Release
 
 Applicazione desktop in via di sviluppo per il calcolo del potenziale profitto di investimenti in criptovalute basato sulla crescita del Market Cap.
 
