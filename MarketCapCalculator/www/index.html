@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recupero Password — MarketCap Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="ticket">
+        <div class="perforation perforation-top" aria-hidden="true"></div>
+
+        <div class="ticket-body">
+            <header class="ticket-head">
+                <div class="ticket-head-row">
+                    
+                </div>
+                <h1>MarketCap Calculator</h1>
+                <p class="ticket-sub">Reimpostazione password account</p>
+            </header>
+
+            <nav class="ledger" aria-label="Avanzamento procedura">
+                <ol class="ledger-steps" id="stepDots">
+                    <li class="ledger-step active" data-step="1"><span class="num">01</span><span class="lbl">Invia</span></li>
+                    <li class="ledger-step" data-step="2"><span class="num">02</span><span class="lbl">Verifica</span></li>
+                    <li class="ledger-step" data-step="3"><span class="num">03</span><span class="lbl">Reset</span></li>
+                </ol>
+            </nav>
+
+            <div class="rule"></div>
+
+            <!-- Step 1: Invia codice -->
+            <section class="step active" id="step1">
+                <h2 class="step-title">Codice via Telegram</h2>
+                <p class="step-description">Richiedi il codice di recupero: verrà consegnato dal bot sul tuo Telegram.</p>
+
+                <button class="btn btn-primary" id="sendCodeBtn">
+                    <span class="btn-text">Invia codice</span>
+                    <div class="spinner" id="sendSpinner"></div>
+                </button>
+
+                <div class="telegram-info">
+                    <span class="telegram-mark">TG</span>
+                    <span class="telegram-text">Consegna a cura di <strong>@MarketCapRecoveryBot</strong></span>
+                </div>
+            </section>
+
+            <!-- Step 2: Inserisci codice -->
+            <section class="step" id="step2">
+                <h2 class="step-title">Inserisci il codice</h2>
+                <p class="step-description">Riporta le 6 cifre ricevute su Telegram.</p>
+
+                <div class="input-group">
+                    <label for="codeInput">Codice di recupero</label>
+                    <input type="text" class="code-input" id="codeInput" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="000000" autocomplete="one-time-code">
+                </div>
+
+                <div class="countdown" id="countdown">Scadenza tra <strong id="countdownTime">10:00</strong></div>
+
+                <button class="btn btn-primary" id="verifyCodeBtn">Verifica codice</button>
+                <button type="button" class="btn-link" id="resendCodeBtn" disabled>Invia di nuovo (<span id="resendTimer">30</span>s)</button>
+                <div class="error-message" id="codeError" role="alert">Codice non valido</div>
+            </section>
+
+            <!-- Step 3: Nuova password -->
+            <section class="step" id="step3">
+                <h2 class="step-title">Nuova password</h2>
+                <p class="step-description">Imposta le credenziali aggiornate per l'account.</p>
+
+                <div class="input-group">
+                    <label for="newPasswordInput">Nuova password</label>
+                    <div class="password-field">
+                        <input type="password" id="newPasswordInput" placeholder="Minimo 8 caratteri" autocomplete="new-password">
+                        <button type="button" class="toggle-eye" data-target="newPasswordInput" aria-label="Mostra password">show</button>
+                    </div>
+                    <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                    <div class="strength-label" id="strengthLabel">&nbsp;</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPasswordInput">Conferma password</label>
+                    <div class="password-field">
+                        <input type="password" id="confirmPasswordInput" placeholder="Ripeti la password" autocomplete="new-password">
+                        <button type="button" class="toggle-eye" data-target="confirmPasswordInput" aria-label="Mostra password">show</button>
+                    </div>
+                    <div class="match-label" id="matchLabel">&nbsp;</div>
+                </div>
+
+                <button class="btn btn-primary" id="resetPasswordBtn">Cambia password</button>
+                <div class="error-message" id="passwordError" role="alert">Le password non coincidono</div>
+                <div class="success-message" id="successMessage">
+                    <div class="checkmark">OK</div>
+                    Password aggiornata correttamente.<br>
+                    <span id="closeCountdown"></span>
+
+                    <button class="btn btn-secondary" id="backToAppBtn" style="display: none;" onclick="window.close()">
+                        Torna all'app
+                    </button>
+                </div>
+            </section>
+
+            <div class="rule"></div>
+
+            <footer class="ticket-foot">
+                <div class="stamp">
+                    <span class="stamp-line">codice sorgente</span>
+                    <a href="https://github.com/lore6e7a6f" target="_blank" rel="noopener">github.com/lore6e7a6f</a>
+                </div>
+            </footer>
+        </div>
+
+        <div class="perforation perforation-bottom" aria-hidden="true"></div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

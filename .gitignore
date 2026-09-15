@@ -1,0 +1,33 @@
+# Build
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.cache
+*.pdb
+*.dll
+*.exe
+
+# Visual Studio
+.vs/
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# File di dati locali
+MarketCapCalculator/bin/
+MarketCapCalculator/obj/
+MarketCapCalculator/wwwroot/
+
+# AppData generati
+*.enc
+*.hash
+*.flag
+*.bin
+
+# File temporanei
+*.log
+*.tmp
