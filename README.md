@@ -48,7 +48,8 @@ cd MarketCapCalculator
    dotnet build
    dotnet run --project MarketCapCalculator
 
-Se dovessero crearsi conflitti con SDK obsolete, consiglio di aggiornarle; se non possibile si può modificare il global.json con la propria versione installata
+Se dovessero crearsi conflitti con SDK obsolete, consiglio di aggiornarle.
+Se non possibile si può modificare il global.json con la propria versione installata
 ```
 
 ## Configurazione
