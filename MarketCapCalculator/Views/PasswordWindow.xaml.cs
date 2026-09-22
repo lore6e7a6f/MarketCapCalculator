@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -118,21 +117,15 @@ namespace MarketCapCalculator.Views
 
             try
             {
-                var recoveryCode = new Random().Next(100000, 999999).ToString();
-
-                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                var appFolder = Path.Combine(appDataPath, "MarketCapCalculator");
-                Directory.CreateDirectory(appFolder);
-                File.WriteAllText(Path.Combine(appFolder, "recovery_code.txt"), recoveryCode);
+                var recoveryCode = System.Security.Cryptography.RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
 
                 _webServer = new LocalWebServerService();
+                // Il nuovo hash password viene salvato internamente da
+                // LocalWebServerService solo dopo la verifica del codice.
                 var newPassword = await _webServer.StartRecoveryServerAsync(recoveryCode);
 
                 if (!string.IsNullOrEmpty(newPassword))
                 {
-                    var secureStorage = new SecureStorageService();
-                    secureStorage.SavePasswordHash(newPassword);
-
                     PasswordInput.Clear();
                     PasswordInput.Focus();
                     ErrorBorder.Visibility = Visibility.Collapsed;

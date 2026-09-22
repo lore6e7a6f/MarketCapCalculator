@@ -12,6 +12,10 @@ namespace MarketCapCalculator.Services
         private HttpListener? _listener;
         private readonly int _port = 8080;
         private string? _recoveryCode;
+        private DateTime _codeExpiresAtUtc;
+        // Diventa true SOLO dopo una verifica del codice riuscita: senza
+        // questo, /reset_password non deve poter cambiare la password.
+        private bool _codeVerified;
         private TaskCompletionSource<string?>? _passwordResetTcs;
         private string _wwwRoot;
         private TelegramBotService _telegramBot;
@@ -33,6 +37,8 @@ namespace MarketCapCalculator.Services
         public async Task<string?> StartRecoveryServerAsync(string recoveryCode)
         {
             _recoveryCode = recoveryCode;
+            _codeExpiresAtUtc = DateTime.UtcNow.AddMinutes(10);
+            _codeVerified = false;
             _passwordResetTcs = new TaskCompletionSource<string?>();
 
             try
@@ -130,13 +136,34 @@ namespace MarketCapCalculator.Services
             {
                 try
                 {
-                    var json = System.Text.Json.JsonDocument.Parse(body);
-                    var root = json.RootElement;
-                    var code = root.TryGetProperty("code", out var c) ? c.GetString() : null;
+                    if (DateTime.UtcNow > _codeExpiresAtUtc)
+                    {
+                        jsonResponse = "{\"success\":false,\"error\":\"Codice scaduto\"}";
+                    }
+                    else
+                    {
+                        var json = System.Text.Json.JsonDocument.Parse(body);
+                        var root = json.RootElement;
+                        var code = root.TryGetProperty("code", out var c) ? c.GetString() : null;
 
-                    jsonResponse = code == _recoveryCode
-                        ? "{\"success\":true}"
-                        : "{\"success\":false,\"error\":\"Codice non valido\"}";
+                        // Confronto a tempo costante per evitare timing attack
+                        // su un endpoint HTTP locale raggiungibile da qualsiasi
+                        // processo/pagina in esecuzione sulla stessa macchina.
+                        var isMatch = code != null && _recoveryCode != null &&
+                            code.Length == _recoveryCode.Length &&
+                            System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(
+                                Encoding.UTF8.GetBytes(code), Encoding.UTF8.GetBytes(_recoveryCode));
+
+                        if (isMatch)
+                        {
+                            _codeVerified = true;
+                            jsonResponse = "{\"success\":true}";
+                        }
+                        else
+                        {
+                            jsonResponse = "{\"success\":false,\"error\":\"Codice non valido\"}";
+                        }
+                    }
                 }
                 catch { jsonResponse = "{\"success\":false,\"error\":\"Errore\"}"; }
             }
@@ -144,19 +171,35 @@ namespace MarketCapCalculator.Services
             {
                 try
                 {
-                    var json = System.Text.Json.JsonDocument.Parse(body);
-                    var root = json.RootElement;
-                    var newPassword = root.TryGetProperty("new_password", out var p) ? p.GetString() : null;
-
-                    if (!string.IsNullOrEmpty(newPassword) && newPassword.Length >= 8)
+                    // Blocco critico: senza una /verify_code riuscita in
+                    // precedenza (e non scaduta), il reset è rifiutato.
+                    // Prima questo controllo non esisteva: chiunque potesse
+                    // raggiungere la porta locale poteva cambiare la
+                    // password dell'app senza conoscere alcun codice.
+                    if (!_codeVerified || DateTime.UtcNow > _codeExpiresAtUtc)
                     {
-                        var secureStorage = new SecureStorageService();
-                        secureStorage.SavePasswordHash(newPassword);
-
-                        _passwordResetTcs?.TrySetResult(newPassword);
-                        jsonResponse = "{\"success\":true}";
+                        jsonResponse = "{\"success\":false,\"error\":\"Verifica del codice richiesta\"}";
                     }
-                    else jsonResponse = "{\"success\":false,\"error\":\"Password troppo corta\"}";
+                    else
+                    {
+                        var json = System.Text.Json.JsonDocument.Parse(body);
+                        var root = json.RootElement;
+                        var newPassword = root.TryGetProperty("new_password", out var p) ? p.GetString() : null;
+
+                        if (!string.IsNullOrEmpty(newPassword) && newPassword.Length >= 8)
+                        {
+                            var secureStorage = new SecureStorageService();
+                            secureStorage.SavePasswordHash(newPassword);
+
+                            // Il codice è monouso: invalidato subito dopo il reset.
+                            _codeVerified = false;
+                            _recoveryCode = null;
+
+                            _passwordResetTcs?.TrySetResult(newPassword);
+                            jsonResponse = "{\"success\":true}";
+                        }
+                        else jsonResponse = "{\"success\":false,\"error\":\"Password troppo corta\"}";
+                    }
                 }
                 catch { jsonResponse = "{\"success\":false,\"error\":\"Errore\"}"; }
             }
