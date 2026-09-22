@@ -1,4 +1,4 @@
-# MarketCap Calculator Pro
+# MarketCap Calculator Pre-Release
 
 Applicazione desktop in via di sviluppo per il calcolo del potenziale profitto di investimenti in criptovalute basato sulla crescita del Market Cap.
 
@@ -47,6 +47,9 @@ cd MarketCapCalculator
 2. dotnet restore
    dotnet build
    dotnet run --project MarketCapCalculator
+
+Se dovessero crearsi conflitti con SDK obsolete, consiglio di aggiornarle.
+Se non possibile si può modificare il global.json con la propria versione installata
 ```
 
 ## Configurazione
